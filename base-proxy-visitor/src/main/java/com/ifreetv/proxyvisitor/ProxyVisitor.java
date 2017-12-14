@@ -28,7 +28,7 @@ public class ProxyVisitor {
                 LoggerUtils.getLogger().error("用代理抓取网页内容出现错误：" + e.getMessage(), e);
             }
         }
-        return Visitor.getHtmlSource(url, list.get(0), true);
+        return BrowserDriver.getHtmlSource(url, list.get(0), true);
     }
 
 //    public static void main(String[] args) {

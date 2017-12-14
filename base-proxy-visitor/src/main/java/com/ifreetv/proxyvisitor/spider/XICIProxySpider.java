@@ -1,10 +1,7 @@
 package com.ifreetv.proxyvisitor.spider;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
-import com.ifreetv.proxyvisitor.Config;
-import com.ifreetv.proxyvisitor.ProxyInfo;
-import com.ifreetv.proxyvisitor.ProxyInfoManager;
-import com.ifreetv.proxyvisitor.Visitor;
+import com.ifreetv.proxyvisitor.*;
 import com.machinepublishers.jbrowserdriver.ProxyConfig;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -54,7 +51,7 @@ public class XICIProxySpider extends Thread implements IProxySpider {
     public void scan(List<ProxyInfo> allValidateProxyInfoList) {
         try{
             LoggerUtils.getLogger().info("正在抓取：" + Config.URL_ADDRESS + "代理IP");
-            String htmlResult = Visitor.getHtmlSource(Config.URL_ADDRESS, null, true);
+            String htmlResult = BrowserDriver.getHtmlSource(Config.URL_ADDRESS, null, true);
             if(htmlResult != null){
                 Document doc = Jsoup.parse(htmlResult);
                 Elements els = doc.getElementsByClass("odd");
