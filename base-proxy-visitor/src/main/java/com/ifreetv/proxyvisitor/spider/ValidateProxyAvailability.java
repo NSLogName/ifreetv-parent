@@ -1,6 +1,5 @@
 package com.ifreetv.proxyvisitor.spider;
 
-import com.ifreetv.proxyvisitor.BrowserDriver;
 import com.ifreetv.proxyvisitor.ProxyInfo;
 import com.ifreetv.proxyvisitor.Visitor;
 
@@ -20,7 +19,7 @@ public class ValidateProxyAvailability {
      * @return
      */
     public static Boolean validateProxy(ProxyInfo proxyInfo){
-        String result = Visitor.getHtmlSource("http://www.baidu.com/", false);
+        String result = Visitor.getHtmlSource("http://www.baidu.com/", false, false);
         return result != null;
     }
 }

@@ -51,7 +51,7 @@ public class XICIProxySpider extends Thread implements IProxySpider {
     public void scan(List<ProxyInfo> allValidateProxyInfoList) {
         try{
             LoggerUtils.getLogger().info("正在抓取：" + Config.URL_ADDRESS + "代理IP");
-            String htmlResult = BrowserDriver.getHtmlSource(Config.URL_ADDRESS, null, true);
+            String htmlResult = Visitor.getHtmlSource(Config.URL_ADDRESS, null, true, true);
             if(htmlResult != null){
                 Document doc = Jsoup.parse(htmlResult);
                 Elements els = doc.getElementsByClass("odd");
