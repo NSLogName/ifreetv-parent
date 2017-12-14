@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ifreetv.proxyvisitor</groupId>
+    <!--<groupId>com.ifreetv.proxyvisitor</groupId>-->
     <artifactId>base-proxy-visitor</artifactId>
     <packaging>jar</packaging>
 

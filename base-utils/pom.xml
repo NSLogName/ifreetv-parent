@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ifreetv.baseutils</groupId>
+    <!--<groupId>com.ifreetv.baseutils</groupId>-->
     <artifactId>base-utils</artifactId>
     <packaging>jar</packaging>
 
