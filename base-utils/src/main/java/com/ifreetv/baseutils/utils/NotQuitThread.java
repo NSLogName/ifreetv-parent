@@ -18,8 +18,7 @@ public class NotQuitThread extends Thread {
             try {
                 this.obj.wait();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LoggerUtils.getLogger().error(e.getMessage(), e);
             }
         }
     }
