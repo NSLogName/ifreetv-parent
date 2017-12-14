@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ifreetv</groupId>
-    <artifactId>ifreetv-parent</artifactId>
+    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>base-proxy-visitor</module>
         <module>base-utils</module>
+        <module>business-data-center</module>
     </modules>
 
     <properties>
