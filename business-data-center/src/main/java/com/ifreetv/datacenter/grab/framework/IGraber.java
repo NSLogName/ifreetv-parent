@@ -29,12 +29,6 @@ public interface IGraber<T> {
     String getUrlAddress();
 
     /**
-     * 对应的网页的编码格式
-     * @return 对应的网页的编码格式
-     */
-    String getCharset();
-
-    /**
      * 获取来源
      * @return 获取来源
      */
@@ -44,7 +38,7 @@ public interface IGraber<T> {
      * 解析html的解析器
      * @return 解析html的解析器
      */
-    Parser<T> getParse()throws HtmlParseException;
+    Parser<T> getParse() throws HtmlParseException;
 
     /**
      * 获取缓存，如果有缓存不需要再次抓取
