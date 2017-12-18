@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>${log.level}</level>
+			<!-- <OnMatch>ACCEPT</OnMatch> <OnMismatch>DENY</OnMismatch> -->
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%date %level [%thread] %10logger [%file:%line] %msg%n
+			</pattern>
+			<charset>UTF-8</charset>
+		</layout>
+	</appender>
+	<appender name="FileAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/business-data-center.log</file>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>${log.level}</level>
+			<!-- <OnMatch>ACCEPT</OnMatch> <OnMismatch>DENY</OnMismatch> -->
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>
+				${log.path}/business-data-center-log/business-data-center.%d{yyyy-MM-dd}.log.zip
+			</fileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%date %level [%thread] %10logger [%file:%line] %msg%n
+			</pattern>
+			<charset>UTF-8</charset>
+		</layout>
+	</appender>
+
+	<logger name="java.sql.PreparedStatement">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="java.sql.Connection">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="java.sql.Statement">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="java.sql.ResultSet">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="org.mybatis">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="org.springframework">
+		<level value="${log.level}" />
+	</logger>
+	
+	<logger name="org.apache.zookeeper">
+		<level value="WARN"/>
+	</logger>
+
+	<root level="${log.level}">
+		<appender-ref ref="ConsoleAppender" />
+		<appender-ref ref="FileAppender" />
+	</root>
+</configuration>
+
+

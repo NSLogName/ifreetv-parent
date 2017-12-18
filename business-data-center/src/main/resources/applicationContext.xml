@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 开启注解扫描 -->
+	<context:component-scan base-package="com.ifreetv.datacenter" />
+
+	
+	
+	<bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>${configPath.path}jdbcdatacenter.properties</value>
+				<value>${configPath.path}zookeeper.properties</value>
+				<value>${configPath.path}task.properties</value>
+				<value>${configPath.path}alarmsms.properties</value>
+				<value>${configPath.path}ftp.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="baseConfig" class="com.ifreetv.baseutils.utils.BaseConfig">
+		<property name="configPath">
+			<value>${configPath.path}</value>
+		</property>
+	</bean>
+	
+	<!-- druid数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="url" value="${dbdc.url}" />
+		<property name="username" value="${dbdc.username}" />
+		<property name="password" value="${dbdc.password}" />
+		<property name="driverClassName" value="${dbdc.driverClassName}" />
+		<property name="filters" value="${dbdc.filters}" />
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="${dbdc.maxActive}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${dbdc.initialSize}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${dbdc.maxWait}" />
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="${dbdc.minIdle}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${dbdc.timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${dbdc.minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${dbdc.validationQuery}" />
+		<property name="testWhileIdle" value="${dbdc.testWhileIdle}" />
+		<property name="testOnBorrow" value="${dbdc.testOnBorrow}" />
+		<property name="testOnReturn" value="${dbdc.testOnReturn}" />
+		<property name="maxOpenPreparedStatements" value="${dbdc.maxOpenPreparedStatements}" />
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="${dbdc.removeAbandoned}" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="${dbdc.removeAbandonedTimeout}" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="${dbdc.logAbandoned}" />
+	</bean>
+
+
+	<bean name="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.xcty.datacenter.vo"/>
+        <property name="configLocation" value="classpath:/mybatis/config/mybatis.xml"/>
+        <property name="mapperLocations" value="classpath*:/mybatis/mapper/*.xml"/>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>
+                            dialect=mysql
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.xcty.datacenter.mapper"/>
+    </bean>
+
+	<!-- 启用基于注解的事务控制 -->
+	<tx:annotation-driven />
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+</beans>
