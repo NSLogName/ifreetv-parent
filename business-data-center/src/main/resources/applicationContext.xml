@@ -34,6 +34,9 @@
 			<value>${configPath.path}</value>
 		</property>
 	</bean>
+
+	<bean id="nodeTask" class="com.ifreetv.datacenter.task.NodeTask">
+	</bean>
 	
 	<!-- druid数据库连接池 -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
