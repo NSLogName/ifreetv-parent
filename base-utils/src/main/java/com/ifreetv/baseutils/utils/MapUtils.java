@@ -46,8 +46,4 @@ public class MapUtils {
                 * Math.cos(lat2) * sb2 * sb2));
         return d;
     }
-
-    public static void main(String[] args) {
-
-    }
 }

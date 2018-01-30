@@ -38,12 +38,4 @@ public class MD5 {
         }
         return resultString;
     }
-
-    public static void main(String[] args) {
-        try {
-//			System.out.println(MD5.MD5Encode("FuW0OL0x70E=tzXgZiTdvj89vmVc/VyI1w=="));
-        } catch (Exception e) {
-
-        }
-    }
 }

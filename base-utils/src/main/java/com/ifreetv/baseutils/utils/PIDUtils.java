@@ -17,12 +17,6 @@ import java.lang.management.ManagementFactory;
  * 描述：
  */
 public class PIDUtils {
-
-
-    public static void main(String[] args) {
-        System.out.println(PIDUtils.getCurrentPid());
-    }
-
     /**
      * 获取当前进程PID
      */

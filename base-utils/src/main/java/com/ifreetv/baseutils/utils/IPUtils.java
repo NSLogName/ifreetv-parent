@@ -18,12 +18,6 @@ import java.net.UnknownHostException;
  * 描述：
  */
 public class IPUtils {
-
-
-    public static void main(String[] args) {
-        System.out.println(IPUtils.getLocalIP());
-    }
-
     /**
      * 获取本地ip
      */

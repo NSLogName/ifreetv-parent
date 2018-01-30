@@ -38,10 +38,6 @@ public class Arith {
         return b1.subtract(b2).doubleValue();
     }
 
-    public static void main(String[] a) {
-//		System.out.println(mul(10.88,3.55));
-    }
-
     /**
      * 提供精确的乘法运算。
      *
