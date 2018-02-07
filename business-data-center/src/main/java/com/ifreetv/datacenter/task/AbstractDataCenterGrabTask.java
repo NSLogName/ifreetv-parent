@@ -1,6 +1,5 @@
 package com.ifreetv.datacenter.task;
 
-import com.alibaba.druid.support.monitor.MonitorClient;
 import com.ifreetv.baseutils.utils.DatetimeUtil;
 import com.ifreetv.baseutils.utils.LoggerUtils;
 import com.ifreetv.datacenter.exception.HtmlParseException;

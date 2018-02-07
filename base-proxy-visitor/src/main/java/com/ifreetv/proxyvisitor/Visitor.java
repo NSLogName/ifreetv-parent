@@ -1,19 +1,15 @@
 package com.ifreetv.proxyvisitor;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
-import com.sun.istack.internal.NotNull;
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /*******************************
  * @Title: Visitor

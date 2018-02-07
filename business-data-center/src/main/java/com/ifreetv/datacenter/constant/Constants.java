@@ -1,8 +1,5 @@
 package com.ifreetv.datacenter.constant;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Constants {
 	
 	public static final String JSON = "json";

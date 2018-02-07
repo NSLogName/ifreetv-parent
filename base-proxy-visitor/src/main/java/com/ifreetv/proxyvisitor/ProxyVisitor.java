@@ -2,7 +2,6 @@ package com.ifreetv.proxyvisitor;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
 import com.ifreetv.proxyvisitor.spider.XICIProxySpider;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Random;
@@ -24,7 +23,18 @@ public class ProxyVisitor {
 
     /**
      * 使用代理抓取网页
+     *
      * @param url 待抓取网页
+     * @return 网页抓取内容
+     */
+    public static String getHtmlSource(String url) {
+        return getHtmlSource(url, null);
+    }
+
+    /**
+     * 使用代理抓取网页
+     *
+     * @param url      待抓取网页
      * @param platform 模拟平台
      * @return 网页抓取内容
      */

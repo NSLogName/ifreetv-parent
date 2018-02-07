@@ -6,13 +6,8 @@
  */
 package com.ifreetv.datacenter;
 
-import com.alibaba.druid.support.monitor.MonitorClient;
-import com.ifreetv.baseutils.utils.LoggerUtils;
 import com.ifreetv.baseutils.utils.NotQuitThread;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * ServiceServer.java
