@@ -1,8 +1,10 @@
 package com.ifreetv.proxyvisitor.spider;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
-import com.ifreetv.proxyvisitor.*;
-import com.machinepublishers.jbrowserdriver.ProxyConfig;
+import com.ifreetv.proxyvisitor.Config;
+import com.ifreetv.proxyvisitor.ProxyInfo;
+import com.ifreetv.proxyvisitor.ProxyInfoManager;
+import com.ifreetv.proxyvisitor.Visitor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,11 +22,11 @@ import java.util.List;
  * @version
  ********************************/
 public class XICIProxySpider extends Thread implements IProxySpider {
-    private boolean flag = true;
 
     private static XICIProxySpider instance = new XICIProxySpider();
 
-    private XICIProxySpider() { }
+    private XICIProxySpider() {
+    }
 
     public static XICIProxySpider getInstance() {
         return instance;
@@ -32,13 +34,14 @@ public class XICIProxySpider extends Thread implements IProxySpider {
 
     @Override
     public void run() {
-        while(flag) {
+        boolean flag = true;
+        while (flag) {
             try {
                 IProxySpider spider = XICIProxySpider.getInstance();
                 ProxyInfoManager.clear();
                 spider.scan(ProxyInfoManager.getAllValidateProxyInfoList());
-                for(ProxyInfo proxyInfo:ProxyInfoManager.getAllValidateProxyInfoList()){
-                    LoggerUtils.getLogger().info("有效地址:" + proxyInfo.getAddress() +  ":"  + proxyInfo.getPort());
+                for (ProxyInfo proxyInfo : ProxyInfoManager.getAllValidateProxyInfoList()) {
+                    LoggerUtils.getLogger().info("有效地址:" + proxyInfo.getAddress() + ":" + proxyInfo.getPort());
                 }
                 Thread.sleep(Config.PROXY_SPIDER_SLEEP_TIME);
             } catch (Exception e) {
@@ -49,10 +52,10 @@ public class XICIProxySpider extends Thread implements IProxySpider {
 
     @Override
     public void scan(List<ProxyInfo> allValidateProxyInfoList) {
-        try{
+        try {
             LoggerUtils.getLogger().info("正在抓取：" + Config.URL_ADDRESS + "代理IP");
-            String htmlResult = Visitor.getHtmlSource(Config.URL_ADDRESS, null, true, true);
-            if(htmlResult != null){
+            String htmlResult = Visitor.getHtmlSource(Config.URL_ADDRESS, null, null);
+            if (htmlResult != null) {
                 Document doc = Jsoup.parse(htmlResult);
                 Elements els = doc.getElementsByClass("odd");
                 for (Element e : els) {
@@ -64,23 +67,23 @@ public class XICIProxySpider extends Thread implements IProxySpider {
                     String address = e.getElementsByTag("td").get(1).text().trim();
                     Integer port = Integer.parseInt(e.getElementsByTag("td").get(2).text().trim());
                     ProxyInfo proxyInfo = new ProxyInfo(address, port);
-                    if(ValidateProxyAvailability.validateProxy(proxyInfo)){
+                    if (ValidateProxyAvailability.validateProxy(proxyInfo)) {
                         allValidateProxyInfoList.add(new ProxyInfo(address, port));
                         LoggerUtils.getLogger().info("可用代理：" + address + "：" + port);
-                    }else{
+                    } else {
                         LoggerUtils.getLogger().info(address + "：" + port + "不可用");
                     }
                 }
             }
             ProxyInfoManager.bak();
-        }catch(Exception e){
+        } catch (Exception e) {
             LoggerUtils.getLogger().error("执行抓取代理ip地址出错：" + e.getMessage());
         }
     }
 
     @Override
     public void alive() {
-        if(!instance.isAlive()) {
+        if (!instance.isAlive()) {
             instance.start();
         }
     }

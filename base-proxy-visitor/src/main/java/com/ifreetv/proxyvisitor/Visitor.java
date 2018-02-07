@@ -1,6 +1,19 @@
 package com.ifreetv.proxyvisitor;
 
-import com.machinepublishers.jbrowserdriver.*;
+import com.ifreetv.baseutils.utils.LoggerUtils;
+import com.sun.istack.internal.NotNull;
+import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /*******************************
  * @Title: Visitor
@@ -12,51 +25,112 @@ import com.machinepublishers.jbrowserdriver.*;
  * @version
  ********************************/
 public class Visitor {
+    private static final HashMap<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>(10);
+
+    public static String getHtmlSource(String url) {
+        return getHtmlSource(url, null, null);
+    }
 
     /**
      * 不使用代理获取网页内容
+     *
      * @param url 待抓取网页地址
-     * @param openJS 是否支持JS渲染
-     * @param isMobile 是否模拟手机
      * @return 抓取的网页内容
      */
-    public static String getHtmlSource(String url, boolean openJS, boolean isMobile) {
-        return getHtmlSource(url, null, openJS, isMobile);
+    public static String getHtmlSource(String url, PlatformUtil platform) {
+        return getHtmlSource(url, null, platform);
     }
+
     /**
      * 获取网页内容
-     * @param url 待抓取网页地址
+     *
+     * @param url       待抓取网页地址
      * @param proxyInfo 代理
-     * @param openJS 是否支持JS渲染
-     * @param isMobile 是否模拟手机
      * @return 抓取的网页内容
      */
-    public static String getHtmlSource(String url, ProxyInfo proxyInfo, boolean openJS, boolean isMobile) {
-        // 选择是否模拟手机浏览器
-        UserAgent userAgent;
-        if (isMobile) {
-            userAgent = new UserAgent(UserAgent.Family.MOZILLA,
-                    "Apple Inc.",
-                    "iPhone",
-                    "iPhone OS 10_3 like Mac OS X",
-                    "5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36",
-                    "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1");
-        } else {
-            userAgent = UserAgent.CHROME;
-        }
+    public static String getHtmlSource(String url, ProxyInfo proxyInfo, PlatformUtil platform) {
+        String htmlSource = "";
+        try {
+            // 判断url是否为空
+            if (StringUtils.isBlank(url)) {
+                LoggerUtils.getLogger().info("待抓取的网页地址为空！");
+                return htmlSource;
+            }
 
-        // JBrowserDriver基础设置
-        Settings settings;
-        if (proxyInfo != null) {
-            ProxyConfig proxyConfig = new ProxyConfig(null, proxyInfo.getAddress(), proxyInfo.getPort());
-            settings = Settings.builder().proxy(proxyConfig).javascript(openJS).userAgent(userAgent).timezone(Timezone.ASIA_SHANGHAI).build();
-        } else {
-            settings = Settings.builder().javascript(openJS).userAgent(userAgent).timezone(Timezone.ASIA_SHANGHAI).build();
+            // 默认为Windows平台
+            if (platform == null) {
+                platform = PlatformUtil.WINDOWS;
+            }
+
+            Call call = createOkHttpClient(proxyInfo).newCall(createRequest(url, platform));
+            Response response = call.execute();
+            if (response == null) {
+                return htmlSource;
+            } else {
+                ResponseBody responseBody = response.body();
+                return responseBody != null ? responseBody.string() : htmlSource;
+            }
+        } catch (Exception e) {
+            LoggerUtils.getLogger().error("抓取网页内容出错！" + e.getMessage(), e);
         }
-        JBrowserDriver jBrowserDriver = new JBrowserDriver(settings);
-        jBrowserDriver.get(url);
-        String htmlSource = jBrowserDriver.getPageSource();
-        jBrowserDriver.quit();
         return htmlSource;
+    }
+
+    /**
+     * 创建OkHttpClient
+     *
+     * @param proxyInfo 自定义代理
+     * @return OkHttpClient对象
+     */
+    private static OkHttpClient createOkHttpClient(ProxyInfo proxyInfo) {
+        return new OkHttpClient.Builder()
+                .cookieJar(new CookieJar() {
+                    @Override
+                    public void saveFromResponse(HttpUrl httpUrl, List<Cookie> list) {
+                        cookieStore.put(httpUrl.host(), list);
+                    }
+
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl httpUrl) {
+                        List<Cookie> cookies = cookieStore.get(httpUrl.host());
+                        return cookies != null ? cookies : new ArrayList<Cookie>();
+                    }
+                })
+                .connectTimeout(Config.CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(Config.READ_TIMEOUT, TimeUnit.SECONDS)
+                .proxy(createProxy(proxyInfo))
+                .build();
+    }
+
+    /**
+     * 创建Proxy
+     *
+     * @param proxyInfo 自定义代理
+     * @return Proxy对象
+     */
+    private static Proxy createProxy(ProxyInfo proxyInfo) {
+        Proxy proxy = Proxy.NO_PROXY;
+        if (proxyInfo != null) {
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyInfo.getAddress(), proxyInfo.getPort()));
+        }
+        return proxy;
+    }
+
+    /**
+     * 创建Request
+     *
+     * @param url      抓取网页地址
+     * @param platform 模拟平台类型
+     * @return Request对象
+     */
+    private static Request createRequest(String url, PlatformUtil platform) {
+        return new Request.Builder()
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
+                .addHeader("Connection", "keep-alive")
+                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+                .addHeader("User-Agent", platform.getValue())
+                .url(url)
+                .build();
     }
 }

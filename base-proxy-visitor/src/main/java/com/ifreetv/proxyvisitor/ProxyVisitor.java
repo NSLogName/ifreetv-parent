@@ -2,8 +2,10 @@ package com.ifreetv.proxyvisitor;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
 import com.ifreetv.proxyvisitor.spider.XICIProxySpider;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Random;
 
 /*******************************
  * @Title: ProxyVisitor
@@ -23,12 +25,14 @@ public class ProxyVisitor {
     /**
      * 使用代理抓取网页
      * @param url 待抓取网页
-     * @param isMobile 是否模拟手机
+     * @param platform 模拟平台
      * @return 网页抓取内容
      */
-    public static String getHtmlSource(String url, boolean isMobile) {
+    public static String getHtmlSource(String url, PlatformUtil platform) {
         getProxyInfoList();
-        return Visitor.getHtmlSource(url, list.get(0),true, isMobile);
+        Random random = new Random();
+        int i = random.nextInt(list.size());
+        return Visitor.getHtmlSource(url, list.get(i), platform);
     }
 
     /**
@@ -47,12 +51,5 @@ public class ProxyVisitor {
                 LoggerUtils.getLogger().error("用代理抓取网页内容出现错误：" + e.getMessage(), e);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println("---------");
-        String url = "http://iptv.cdzmn.com/tv.php";
-        String str = getHtmlSource(url, true);
-        System.out.println("str=" + str);
     }
 }

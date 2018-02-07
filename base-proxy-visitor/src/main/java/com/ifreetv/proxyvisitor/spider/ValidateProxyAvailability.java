@@ -2,6 +2,7 @@ package com.ifreetv.proxyvisitor.spider;
 
 import com.ifreetv.proxyvisitor.ProxyInfo;
 import com.ifreetv.proxyvisitor.Visitor;
+import org.apache.commons.lang3.StringUtils;
 
 /*******************************
  * @Title: ValidateProxyAvailability
@@ -15,11 +16,12 @@ import com.ifreetv.proxyvisitor.Visitor;
 public class ValidateProxyAvailability {
     /**
      * 检查代理地址是否可用
+     *
      * @param proxyInfo
      * @return
      */
-    public static Boolean validateProxy(ProxyInfo proxyInfo){
-        String result = Visitor.getHtmlSource("http://www.baidu.com/", false, false);
-        return result != null;
+    public static Boolean validateProxy(ProxyInfo proxyInfo) {
+        String result = Visitor.getHtmlSource("http://www.baidu.com/", proxyInfo, null);
+        return StringUtils.isNotBlank(result);
     }
 }

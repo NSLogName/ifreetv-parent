@@ -1,7 +1,5 @@
 package com.ifreetv.proxyvisitor;
 
-import com.machinepublishers.jbrowserdriver.ProxyConfig;
-
 /*******************************
  * @Title: ProxyInfo
  * @package com.ifreetv.proxyvisitor

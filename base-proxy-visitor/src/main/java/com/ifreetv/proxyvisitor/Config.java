@@ -24,7 +24,7 @@ public class Config {
     static {
         URL_ADDRESS = "http://www.xicidaili.com/wt/";
         PROXY_SPIDER_SLEEP_TIME = 60 * 1000;
-        CONNECT_TIMEOUT = 3 * 1000;
-        READ_TIMEOUT = 15 * 1000;
+        CONNECT_TIMEOUT = 3;
+        READ_TIMEOUT = 15;
     }
 }
