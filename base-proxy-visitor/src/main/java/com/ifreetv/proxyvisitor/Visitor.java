@@ -4,8 +4,11 @@ import com.ifreetv.baseutils.utils.LoggerUtils;
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +70,7 @@ public class Visitor {
                 return responseBody != null ? responseBody.string() : htmlSource;
             }
         } catch (Exception e) {
-            LoggerUtils.getLogger().error("抓取网页内容出错！" + e.getMessage(), e);
+            LoggerUtils.getLogger().error("Visitor ========== 抓取网页内容出错！" + e.getMessage(), e);
         }
         return htmlSource;
     }
