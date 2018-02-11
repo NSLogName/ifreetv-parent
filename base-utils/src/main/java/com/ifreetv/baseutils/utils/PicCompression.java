@@ -48,9 +48,9 @@ public class PicCompression {
             Image srcFile = ImageIO.read(file);
             int new_w = 0, new_h = 0;
             //获取图片的实际大小 高度
-            int h = (int) srcFile.getHeight(null);
+            int h = srcFile.getHeight(null);
             //获取图片的实际大小 宽度
-            int w = (int) srcFile.getWidth(null);
+            int w = srcFile.getWidth(null);
 
             //算出图片比例值
             double rate = 0;
@@ -118,9 +118,9 @@ public class PicCompression {
             /** 坐标起点  */
             int x = 0, y = 0;
             /**获取图片的实际大小 宽度*/
-            int w = (int) srcFile.getWidth(null);
+            int w = srcFile.getWidth(null);
             /**获取图片的实际大小 高度*/
-            int h = (int) srcFile.getHeight(null);
+            int h = srcFile.getHeight(null);
             //算出图片比例值
             double rate = 0;
             if (w >= h) {
@@ -155,7 +155,7 @@ public class PicCompression {
      *                1、Graphics 类包含绘制矩形的方法<br/>
      *                2、Rectangle 类作为拖拉的矩形区域以作剪裁<br/>
      */
-    private static String drawCompressImage(String oldFile, Image srcFile, File file, int width, int height, int x, int y, float quality) throws FileNotFoundException, IOException {
+    private static String drawCompressImage(String oldFile, Image srcFile, File file, int width, int height, int x, int y, float quality) throws IOException {
         String newImage = "";
         /* 压缩后的文件名 */
         String filePrex = oldFile.substring(0, oldFile.lastIndexOf('.')) + "_small";

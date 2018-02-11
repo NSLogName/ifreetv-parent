@@ -11,8 +11,8 @@ package com.ifreetv.baseutils.utils;
 public interface IAsyncCallback {
 
 	/** 成功时的通知 */
-	public void onSuccess();
+    void onSuccess();
 	
 	/** 失败时的通知 */
-	public void onFailed();
+    void onFailed();
 }
