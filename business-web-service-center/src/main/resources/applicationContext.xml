@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 开启注解扫描 -->
+	<context:component-scan base-package="com.ifreetv" >
+		<context:include-filter type="annotation"
+								expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation"
+								expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation"
+								expression="org.springframework.stereotype.Component" />
+		<context:include-filter type="annotation"
+								expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+	
+	<bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>${configPath.path}jdbc.properties</value>
+				<value>${configPath.path}task.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="baseConfig" class="com.ifreetv.baseutils.utils.BaseConfig">
+		<property name="configPath" value="${configPath.path}"/>
+	</bean>
+	
+	<!-- druid数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="filters" value="${db.filters}" />
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="${db.maxActive}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${db.initialSize}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${db.maxWait}" />
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="${db.minIdle}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${db.timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${db.minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${db.validationQuery}" />
+		<property name="testWhileIdle" value="${db.testWhileIdle}" />
+		<property name="testOnBorrow" value="${db.testOnBorrow}" />
+		<property name="testOnReturn" value="${db.testOnReturn}" />
+		<property name="maxOpenPreparedStatements" value="${db.maxOpenPreparedStatements}" />
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="${db.removeAbandoned}" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="${db.removeAbandonedTimeout}" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="${db.logAbandoned}" />
+	</bean>
+
+	<!-- 配置事务管理器，注意这里的dataSource和SqlSessionFactoryBean的dataSource要一致，不然事务就没有作用了 -->
+	<bean name="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:/mybatis/config/mybatis.xml"/>
+        <property name="mapperLocations" value="classpath*:/mybatis/mapper/*Mapper.xml"/>
+		<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageHelper">
+					<property name="properties">
+						<value>
+							dialect=mysql
+						</value>
+					</property>
+				</bean>
+			</array>
+		</property>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="markerInterface" value="com.ifreetv.webcenter.dao.mapper.i.IMapper"/>
+        <property name="basePackage" value="com.ifreetv.webcenter.dao.mapper"/>
+    </bean>
+ 
+	<!-- 启用基于注解的事务控制 -->
+	<tx:annotation-driven />
+	
+	<!-- 支持上传文件 -->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/> 
+</beans>

@@ -12,6 +12,7 @@
         <module>base-proxy-visitor</module>
         <module>base-utils</module>
         <module>business-data-center</module>
+        <module>business-web-service-center</module>
     </modules>
 
     <properties>
@@ -51,7 +52,60 @@
         <aspect-jrt-version>1.8.9</aspect-jrt-version>
         <aspect-jweaver-version>1.7.4</aspect-jweaver-version>
         <aop-alliance-version>1.0</aop-alliance-version>
+        <okhttp.version>3.9.1</okhttp.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <log.level>DEBUG</log.level>
+                <log.path>D:/logPath</log.path>
+                <!-- java2用户  -->
+                <zk.address>192.168.3.203:2182</zk.address>
+                <!-- JAVA帐户tomcat -->
+                <configPath.path>http://47.93.51.153:8080/config/local/</configPath.path>
+                <node.intervalTime>3000</node.intervalTime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <properties>
+                <log.level>DEBUG</log.level>
+                <log.path>/app/logs/</log.path>
+                <zk.address>127.0.0.1:2181</zk.address>
+                <configPath.path>http://47.93.51.153:8080/config/online/</configPath.path>
+                <node.intervalTime>3000</node.intervalTime>
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>qa</id>
+            <properties>
+                <log.level>INFO</log.level>
+                <log.path>/app/logs</log.path>
+                <zk.address>127.0.0.1:2181</zk.address>
+                <configPath.path>http://47.93.51.153:8080/config/online/</configPath.path>
+                <node.intervalTime>3000</node.intervalTime>
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <log.level>INFO</log.level>
+                <log.path>/alidata1/logs</log.path>
+                <configPath.path>http://47.93.51.153:8080/config/online/</configPath.path>
+                <node.intervalTime>3000</node.intervalTime>
+            </properties>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <snapshotRepository>

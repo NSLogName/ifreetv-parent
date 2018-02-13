@@ -2,8 +2,10 @@ package com.ifreetv.datacenter.grab.framework;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
 import com.ifreetv.datacenter.grab.result.GrabResult;
+import com.ifreetv.proxyvisitor.PlatformUtil;
 import com.ifreetv.proxyvisitor.ProxyVisitor;
 import com.ifreetv.proxyvisitor.Visitor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -105,17 +107,19 @@ public abstract class AbstractGraber<T> implements IGraber<T>{
      */
     public String grabDataStr(){
         if(isProxy()){
-            return ProxyVisitor.getHtmlSource(getUrlAddress());
+            return ProxyVisitor.getHtmlSource(getUrlAddress(),chosePlatform());
         }else{
             String responseBody;
             try{
-                responseBody = Visitor.getHtmlSource(getUrlAddress(), null, true);
+                responseBody = Visitor.getHtmlSource(getUrlAddress(), null, chosePlatform());
             }catch(Exception e){
-                responseBody = ProxyVisitor.getHtmlSource(getUrlAddress());
+//                responseBody = ProxyVisitor.getHtmlSource(getUrlAddress(),chosePlatform());
+                responseBody = Visitor.getHtmlSource(getUrlAddress(), null, chosePlatform());
             }
 
-            if(responseBody == null || responseBody.equals("")){
-                responseBody = ProxyVisitor.getHtmlSource(getUrlAddress());
+            if(StringUtils.isBlank(responseBody)){
+//                responseBody = ProxyVisitor.getHtmlSource(getUrlAddress(),chosePlatform());
+                responseBody = Visitor.getHtmlSource(getUrlAddress(), null, chosePlatform());
             }
             return responseBody;
         }
@@ -126,6 +130,14 @@ public abstract class AbstractGraber<T> implements IGraber<T>{
      * @return 是否使用代理
      */
     public Boolean isProxy(){
-        return true;
+        return false;
+    }
+
+    /**
+     * 使用哪种平台抓取
+     * @return 平台
+     */
+    public PlatformUtil chosePlatform() {
+        return PlatformUtil.WINDOWS;
     }
 }

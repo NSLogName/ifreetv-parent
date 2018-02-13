@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ifreetv.webcenter.dao.mapper.ProgramMapper">
+    <resultMap id="BaseResultMap" type="com.ifreetv.webcenter.dao.entity.Program">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="classify_name" property="classifyName" jdbcType="VARCHAR"/>
+        <result column="channel_name" property="channelName" jdbcType="VARCHAR"/>
+        <result column="parse_date" property="parseDate" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="memo" property="memo" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.ifreetv.webcenter.dao.entity.ProgramWithBLOBs" extends="BaseResultMap">
+        <result column="channel_line_url" property="channelLineUrl" jdbcType="LONGVARCHAR"/>
+        <result column="channel_menu" property="channelMenu" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, classify_name, channel_name, parse_date, update_time, memo, create_time
+    </sql>
+    <sql id="Blob_Column_List">
+    channel_line_url, channel_menu
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from t_freetv_program
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectClassifyList" resultType="java.lang.String" parameterType="java.lang.String">
+       SELECT DISTINCT  t.classifyName FROM (SELECT
+                      tfp.classify_name AS classifyName, tfp.id
+                      FROM t_freetv_program tfp
+                      WHERE tfp.parse_date = #{parseDate,jdbcType=VARCHAR}
+                      ORDER BY id) t
+    </select>
+
+    <select id="selectChannelList" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT DISTINCT t.channelName FROM (SELECT
+                      tfp.channel_name AS channelName, tfp.id
+                      FROM t_freetv_program tfp
+                      WHERE tfp.parse_date = #{parseDate,jdbcType=VARCHAR}
+                      And tfp.classify_name = #{classifyName,jdbcType=VARCHAR}
+                      ORDER BY id) t
+    </select>
+
+    <select id="selectChannelContent" resultType="com.ifreetv.webcenter.entity.ChannelContent" parameterType="java.lang.String">
+        SELECT
+        tfp.channel_line_url AS channelUrl,
+        tfp.channel_menu AS channelMenu
+        FROM t_freetv_program tfp
+        WHERE tfp.channel_name = #{channelName,jdbcType=VARCHAR}
+        AND tfp.parse_date = #{parseDate,jdbcType=VARCHAR}
+        Limit 1
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_freetv_program
+    where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.ifreetv.webcenter.dao.entity.ProgramWithBLOBs">
+    insert into t_freetv_program (id, classify_name, channel_name, 
+      parse_date, update_time, memo, 
+      create_time, channel_line_url, channel_menu
+      )
+    values (#{id,jdbcType=INTEGER}, #{classifyName,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR}, 
+      #{parseDate,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{channelLineUrl,jdbcType=LONGVARCHAR}, #{channelMenu,jdbcType=LONGVARCHAR}
+      )
+    </insert>
+    <insert id="insertSelective" parameterType="com.ifreetv.webcenter.dao.entity.ProgramWithBLOBs">
+        insert into t_freetv_program
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="classifyName != null">
+                classify_name,
+            </if>
+            <if test="channelName != null">
+                channel_name,
+            </if>
+            <if test="parseDate != null">
+                parse_date,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="memo != null">
+                memo,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="channelLineUrl != null">
+                channel_line_url,
+            </if>
+            <if test="channelMenu != null">
+                channel_menu,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="classifyName != null">
+                #{classifyName,jdbcType=VARCHAR},
+            </if>
+            <if test="channelName != null">
+                #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="parseDate != null">
+                #{parseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="memo != null">
+                #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="channelLineUrl != null">
+                #{channelLineUrl,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="channelMenu != null">
+                #{channelMenu,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ifreetv.webcenter.dao.entity.ProgramWithBLOBs">
+        update t_freetv_program
+        <set>
+            <if test="classifyName != null">
+                classify_name = #{classifyName,jdbcType=VARCHAR},
+            </if>
+            <if test="channelName != null">
+                channel_name = #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="parseDate != null">
+                parse_date = #{parseDate,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="memo != null">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="channelLineUrl != null">
+                channel_line_url = #{channelLineUrl,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="channelMenu != null">
+                channel_menu = #{channelMenu,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ifreetv.webcenter.dao.entity.ProgramWithBLOBs">
+    update t_freetv_program
+    set classify_name = #{classifyName,jdbcType=VARCHAR},
+      channel_name = #{channelName,jdbcType=VARCHAR},
+      parse_date = #{parseDate,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR},
+      memo = #{memo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      channel_line_url = #{channelLineUrl,jdbcType=LONGVARCHAR},
+      channel_menu = #{channelMenu,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ifreetv.webcenter.dao.entity.Program">
+    update t_freetv_program
+    set classify_name = #{classifyName,jdbcType=VARCHAR},
+      channel_name = #{channelName,jdbcType=VARCHAR},
+      parse_date = #{parseDate,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR},
+      memo = #{memo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

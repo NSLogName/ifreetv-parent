@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="GBK"?>
+<configuration>
+	<appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>${log.level}</level>
+			<!-- <OnMatch>ACCEPT</OnMatch> <OnMismatch>DENY</OnMismatch> -->
+		</filter>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%date %level [%thread] %10logger [%file:%line] %msg%n
+			</pattern>
+			<charset>UTF-8</charset>
+		</layout>
+	</appender>
+	<appender name="FileAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/business-web-service-center.log</file>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>${log.level}</level>
+			<!-- <OnMatch>ACCEPT</OnMatch> <OnMismatch>DENY</OnMismatch> -->
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>
+				${log.path}/business-web-service-center-log/business-web-service-center.%d{yyyy-MM-dd}.log.zip
+			</fileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%date %level [%thread] %10logger [%file:%line] %msg%n
+			</pattern>
+			<charset>UTF-8</charset>
+		</layout>
+	</appender>
+	
+	<appender name="serviceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+	    <file>${log.path}/invoker.log</file>  
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>
+					${log.path}/invoker-log/invoker.%d{yyyy-MM-dd}.log.zip
+				</fileNamePattern>
+			</rollingPolicy>
+	    <encoder>  
+	        <pattern>%d{HH:mm:ss}%msg%n</pattern>  
+	    </encoder>  
+	</appender> 
+
+	<logger name="com.ifreetv.webcenter.filter.InvokeFilter" LEVEL="DEBUG">
+	    <appender-ref ref="serviceAppender" />  
+	</logger>  
+
+	<logger name="java.sql.PreparedStatement">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="java.sql.Connection">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="java.sql.Statement">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="java.sql.ResultSet">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="org.mybatis">
+		<level value="${log.level}" />
+	</logger>
+	<logger name="org.springframework">
+		<level value="${log.level}" />
+	</logger>
+	
+	<logger name="org.apache.zookeeper">
+		<level value="WARN"/>
+	</logger>
+
+	<root level="${log.level}">
+		<appender-ref ref="ConsoleAppender" />
+		<appender-ref ref="FileAppender" />
+	</root>
+</configuration>
+
+

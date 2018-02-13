@@ -1,6 +1,7 @@
 package com.ifreetv.proxyvisitor;
 
 import com.ifreetv.baseutils.utils.LoggerUtils;
+import com.ifreetv.proxyvisitor.spider.KUAIProxySpider;
 import com.ifreetv.proxyvisitor.spider.XICIProxySpider;
 
 import java.util.List;
@@ -61,5 +62,30 @@ public class ProxyVisitor {
                 LoggerUtils.getLogger().error("用代理抓取网页内容出现错误：" + e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * 获取代理
+     */
+    private static void getKuaiProxyInfoList() {
+        KUAIProxySpider kuaiProxySpider = KUAIProxySpider.getInstance();
+        if (!kuaiProxySpider.isAlive()) {
+            kuaiProxySpider.start();
+        }
+        list = ProxyInfoManager.getAllValidateProxyInfoList();
+        while (list.size() < 1) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                LoggerUtils.getLogger().error("用代理抓取网页内容出现错误：" + e.getMessage(), e);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        getKuaiProxyInfoList();
+        Random random = new Random();
+        int i = random.nextInt(list.size());
+        System.out.println(Visitor.getHtmlSource("www.baidu.com", list.get(i), PlatformUtil.WINDOWS));
     }
 }

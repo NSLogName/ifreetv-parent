@@ -5,10 +5,7 @@ import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +66,13 @@ public class Visitor {
                 ResponseBody responseBody = response.body();
                 return responseBody != null ? responseBody.string() : htmlSource;
             }
-        } catch (Exception e) {
+        }catch (MalformedURLException e1) {
+            LoggerUtils.getLogger().error("抓取数据解析出错="+e1.getMessage(), e1);
+        } catch (IOException e) {
+            //可能是代理不可用，删除该代理
+            ProxyInfoManager.remove(proxyInfo);
+            LoggerUtils.getLogger().error("抓取网络数据出错="+e.getMessage(), e);
+        }catch (Exception e) {
             LoggerUtils.getLogger().error("Visitor ========== 抓取网页内容出错！" + e.getMessage(), e);
         }
         return htmlSource;

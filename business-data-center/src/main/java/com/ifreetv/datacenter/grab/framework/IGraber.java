@@ -29,12 +29,6 @@ public interface IGraber<T> {
     String getUrlAddress();
 
     /**
-     * 获取来源
-     * @return 获取来源
-     */
-    String getSource();
-
-    /**
      * 解析html的解析器
      * @return 解析html的解析器
      */
